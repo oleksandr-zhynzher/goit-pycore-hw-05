@@ -16,15 +16,18 @@ def parse_log_line(line: str):
 
 def load_logs(file_path: str):
     logs = []
-    
+
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             logs = [parse_log_line(line) for line in file if line.strip()]
             logs = list(filter(lambda log: log, logs))
-    except:
-        print("Помилка при читанні файлу")
+    except FileNotFoundError:
+        print(f"Помилка: Файл '{file_path}' не знайдено")
         sys.exit(1)
-    
+    except Exception as e:
+        print(f"Помилка при читанні файлу: {e}")
+        sys.exit(1)
+
     return logs
 
 
@@ -62,28 +65,29 @@ def main():
     if len(sys.argv) < 2:
         print("Використання: python task_3.py /path/to/logfile.log [log_level]")
         sys.exit(1)
-    
+
     file_path = sys.argv[1]
     log_level = sys.argv[2] if len(sys.argv) > 2 else None
-    
+
     logs = load_logs(file_path)
-    
+
     if not logs:
         print("Попередження: Файл не містить коректних записів логів.")
         return
-    
+
     counts = count_logs_by_level(logs)
-    
+
     display_log_counts(counts)
-    
+
     if log_level:
         filtered_logs = filter_logs_by_level(logs, log_level)
-        
+
         if filtered_logs:
             display_log_details(filtered_logs, log_level)
         else:
             print(f"Записів з рівнем '{log_level.upper()}' не знайдено.")
 
 
-print(main())
+if __name__ == "__main__":
+    main()
 

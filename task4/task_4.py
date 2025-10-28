@@ -13,9 +13,11 @@ def input_error(func):
 
 
 def parse_input(user_input):
-    cmd, *args = user_input.split()
-    cmd = cmd.strip().lower()
-    return cmd, *args
+    parts = user_input.split()
+    if not parts:
+        return "", []
+    cmd = parts[0].strip().lower()
+    return cmd, *parts[1:]
 
 
 @input_error
@@ -76,10 +78,11 @@ def main():
         
         elif command == "all":
             print(show_all(contacts))
-        
+
         else:
             print("Invalid command.")
 
 
-print(main())
+if __name__ == "__main__":
+    main()
 
